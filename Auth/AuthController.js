@@ -30,5 +30,25 @@ router.post('/register', (request,response) =>{
 
 });
 
+
+router.get('/verify', (request,response) =>{
+
+    var token = request.headers["x-access-token"]
+
+    if(!token)
+    return response.status(403).send({auth : false, message : "No token provided"});
+
+    jwt.verify(token,config.Secret, (err,decoded) =>{
+        if(err)
+        return response.status(500).send({auth : false, message : "Failed to authenticate token"})
+
+        user.findById(decoded.id,{Password : 0})
+        .then(user => response.status(200).send(user))
+
+    });
+
+
+});
+
 module.exports = router;
 
