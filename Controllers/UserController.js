@@ -4,6 +4,18 @@ const bodyParser = require("body-parser");
 
 Router.use(bodyParser.json())
 
+router.get('/',verifytoken, (req, resp) => {
+
+    User.findById(req.userId,{password : 0})
+        .then(user =>{
+            if(!user)
+            return resp.status(404).send("user not found")
+           resp.status(200).send(user)
+        })
+        .catch(err => resp.status(500).send(err))
+
+});
+
 Router.get('/', (request, response) => {
     console.log("Get called")
     User.find({})
